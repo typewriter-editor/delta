@@ -1,0 +1,67 @@
+{
+  "name": "@typewriter/delta",
+  "version": "1.0.0",
+  "description": "Format for representing rich text documents and changes.",
+  "author": "Jason Chen <jhchen7@gmail.com>",
+  "homepage": "https://github.com/@dabble/delta",
+  "main": "dist/index.js",
+  "dependencies": {
+    "fast-deep-equal": "^3.1.3",
+    "fast-diff": "1.2.0",
+    "rfdc": "^1.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jasmine": "^4.0.2",
+    "nyc": "^15.1.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.6.2"
+  },
+  "files": [
+    "tsconfig.json",
+    "dist",
+    "src"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "lint": "eslint 'src/**/*.ts'",
+    "test": "npm run build; jasmine test/*.js test/**/*.js",
+    "test:coverage": "nyc npm run test",
+    "test:coverage:report": "nyc report --reporter=lcov"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "rules": {
+      "@typescript-eslint/no-namespace": "off"
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/typewriter-editor/delta.git"
+  },
+  "keywords": [
+    "rich text",
+    "ot",
+    "operational transform",
+    "delta"
+  ]
+}
