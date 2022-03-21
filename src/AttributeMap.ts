@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import rfdc from 'rfdc';
-import isEqual from 'fast-deep-equal';
-const cloneDeep = rfdc();
+import cloneDeep from './util/cloneDeep';
+import isEqual from './util/isEqual';
 
 interface AttributeMap {
   [key: string]: any;

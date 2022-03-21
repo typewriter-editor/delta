@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import diff from 'fast-diff';
-import isEqual from 'fast-deep-equal';
+import isEqual from './util/isEqual';
 import AttributeMap from './AttributeMap';
 import Op from './Op';
 
