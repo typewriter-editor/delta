@@ -7,7 +7,7 @@
     "target": "es2021",
     "lib": ["es2021"],
     "moduleResolution": "node",
-    "module": "esnext",
+    "module": "commonjs",
     "outDir": "dist/",
     "strict": true,
     "noImplicitAny": true,
