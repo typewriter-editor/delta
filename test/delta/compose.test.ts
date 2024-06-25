@@ -1,4 +1,4 @@
-var Delta = require('../../dist/Delta');
+import Delta from '../../src/Delta';
 
 describe('compose()', () => {
   it('insert + insert', () => {
@@ -32,9 +32,7 @@ describe('compose()', () => {
   it('delete + retain', () => {
     const a = new Delta().delete(1);
     const b = new Delta().retain(1, { bold: true, color: 'red' });
-    const expected = new Delta()
-      .delete(1)
-      .retain(1, { bold: true, color: 'red' });
+    const expected = new Delta().delete(1).retain(1, { bold: true, color: 'red' });
     expect(a.compose(b)).toEqual(expected);
   });
 
@@ -88,9 +86,9 @@ describe('compose()', () => {
   });
 
   it('insert embed', () => {
-    const a = new Delta().insert(1, { src: 'http://quilljs.com/image.png' });
+    const a = new Delta().insert('1', { src: 'http://quilljs.com/image.png' });
     const b = new Delta().retain(1, { alt: 'logo' });
-    const expected = new Delta().insert(1, {
+    const expected = new Delta().insert('1', {
       src: 'http://quilljs.com/image.png',
       alt: 'logo',
     });
@@ -112,9 +110,9 @@ describe('compose()', () => {
   });
 
   it('retain empty embed', () => {
-    const a = new Delta().insert(1);
+    const a = new Delta().insert('1');
     const b = new Delta().retain(1);
-    const expected = new Delta().insert(1);
+    const expected = new Delta().insert('1');
     expect(a.compose(b)).toEqual(expected);
   });
 
@@ -126,9 +124,9 @@ describe('compose()', () => {
   });
 
   it('remove all embed attributes', () => {
-    const a = new Delta().insert(2, { bold: true });
+    const a = new Delta().insert('2', { bold: true });
     const b = new Delta().retain(1, { bold: null });
-    const expected = new Delta().insert(2);
+    const expected = new Delta().insert('2');
     expect(a.compose(b)).toEqual(expected);
   });
 
@@ -139,9 +137,7 @@ describe('compose()', () => {
     const a2 = new Delta().insert('Test', attr1);
     const b1 = new Delta().retain(1, { color: 'red' }).delete(2);
     const b2 = new Delta().retain(1, { color: 'red' }).delete(2);
-    const expected = new Delta()
-      .insert('T', { color: 'red', bold: true })
-      .insert('t', attr1);
+    const expected = new Delta().insert('T', { color: 'red', bold: true }).insert('t', attr1);
     expect(a1.compose(b1)).toEqual(expected);
     expect(a1).toEqual(a2);
     expect(b1).toEqual(b2);
@@ -149,11 +145,7 @@ describe('compose()', () => {
   });
 
   it('retain start optimization', () => {
-    const a = new Delta()
-      .insert('A', { bold: true })
-      .insert('B')
-      .insert('C', { bold: true })
-      .delete(1);
+    const a = new Delta().insert('A', { bold: true }).insert('B').insert('C', { bold: true }).delete(1);
     const b = new Delta().retain(3).insert('D');
     const expected = new Delta()
       .insert('A', { bold: true })
@@ -165,12 +157,7 @@ describe('compose()', () => {
   });
 
   it('retain start optimization split', () => {
-    const a = new Delta()
-      .insert('A', { bold: true })
-      .insert('B')
-      .insert('C', { bold: true })
-      .retain(5)
-      .delete(1);
+    const a = new Delta().insert('A', { bold: true }).insert('B').insert('C', { bold: true }).retain(5).delete(1);
     const b = new Delta().retain(4).insert('D');
     const expected = new Delta()
       .insert('A', { bold: true })
@@ -184,10 +171,7 @@ describe('compose()', () => {
   });
 
   it('retain end optimization', () => {
-    const a = new Delta()
-      .insert('A', { bold: true })
-      .insert('B')
-      .insert('C', { bold: true });
+    const a = new Delta().insert('A', { bold: true }).insert('B').insert('C', { bold: true });
     const b = new Delta().delete(1);
     const expected = new Delta().insert('B').insert('C', { bold: true });
     expect(a.compose(b)).toEqual(expected);
@@ -202,11 +186,7 @@ describe('compose()', () => {
       .insert('E', { bold: true })
       .insert('F');
     const b = new Delta().retain(1).delete(1);
-    const expected = new Delta()
-      .insert('AC', { bold: true })
-      .insert('D')
-      .insert('E', { bold: true })
-      .insert('F');
+    const expected = new Delta().insert('AC', { bold: true }).insert('D').insert('E', { bold: true }).insert('F');
     expect(a.compose(b)).toEqual(expected);
   });
 });

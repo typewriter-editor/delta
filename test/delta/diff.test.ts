@@ -1,4 +1,4 @@
-var Delta = require('../../dist/Delta');
+import Delta from '../../src/Delta';
 
 describe('diff()', () => {
   it('insert', () => {
@@ -41,16 +41,16 @@ describe('diff()', () => {
   });
 
   it('embed integer match', () => {
-    const a = new Delta().insert(1);
-    const b = new Delta().insert(1);
+    const a = new Delta().insert('1');
+    const b = new Delta().insert('1');
     const expected = new Delta();
     expect(a.diff(b)).toEqual(expected);
   });
 
   it('embed integer mismatch', () => {
-    const a = new Delta().insert(1);
-    const b = new Delta().insert(2);
-    const expected = new Delta().delete(1).insert(2);
+    const a = new Delta().insert('1');
+    const b = new Delta().insert('2');
+    const expected = new Delta().delete(1).insert('2');
     expect(a.diff(b)).toEqual(expected);
   });
 
@@ -67,9 +67,7 @@ describe('diff()', () => {
       alt: 'Overwrite',
     });
     const b = new Delta().insert({ image: 'http://quilljs.com' });
-    const expected = new Delta()
-      .insert({ image: 'http://quilljs.com' })
-      .delete(1);
+    const expected = new Delta().insert({ image: 'http://quilljs.com' }).delete(1);
     expect(a.diff(b)).toEqual(expected);
   });
 
@@ -78,14 +76,12 @@ describe('diff()', () => {
     const a = new Delta().insert(embed);
     const newEmbed = { image: 'http://github.com' };
     const b = new Delta().insert(newEmbed);
-    const expected = new Delta()
-      .insert({ image: 'http://github.com' })
-      .delete(1);
+    const expected = new Delta().insert({ image: 'http://github.com' }).delete(1);
     expect(a.diff(b)).toEqual(expected);
   });
 
   it('embed false positive', () => {
-    const a = new Delta().insert(1);
+    const a = new Delta().insert('1');
     const b = new Delta().insert(String.fromCharCode(0)); // Placeholder char for embed in diff()
     const expected = new Delta().insert(String.fromCharCode(0)).delete(1);
     expect(a.diff(b)).toEqual(expected);
@@ -103,9 +99,7 @@ describe('diff()', () => {
   });
 
   it('inconvenient indexes', () => {
-    const a = new Delta()
-      .insert('12', { bold: true })
-      .insert('34', { italic: true });
+    const a = new Delta().insert('12', { bold: true }).insert('34', { italic: true });
     const b = new Delta().insert('123', { color: 'red' });
     const expected = new Delta()
       .retain(2, { bold: null, color: 'red' })
@@ -115,12 +109,8 @@ describe('diff()', () => {
   });
 
   it('combination', () => {
-    const a = new Delta()
-      .insert('Bad', { color: 'red' })
-      .insert('cat', { color: 'blue' });
-    const b = new Delta()
-      .insert('Good', { bold: true })
-      .insert('dog', { italic: true });
+    const a = new Delta().insert('Bad', { color: 'red' }).insert('cat', { color: 'blue' });
+    const b = new Delta().insert('Good', { bold: true }).insert('dog', { italic: true });
     const expected = new Delta()
       .insert('Good', { bold: true })
       .delete(2)
@@ -132,7 +122,7 @@ describe('diff()', () => {
 
   it('same document', () => {
     const a = new Delta().insert('A').insert('B', { bold: true });
-    expected = new Delta();
+    const expected = new Delta();
     expect(a.diff(a)).toEqual(expected);
   });
 
@@ -143,9 +133,7 @@ describe('diff()', () => {
     const a2 = new Delta().insert('A', attr1);
     const b1 = new Delta().insert('A', { bold: true }).insert('B');
     const b2 = new Delta().insert('A', { bold: true }).insert('B');
-    const expected = new Delta()
-      .retain(1, { bold: true, color: null })
-      .insert('B');
+    const expected = new Delta().retain(1, { bold: true, color: null }).insert('B');
     expect(a1.diff(b1)).toEqual(expected);
     expect(a1).toEqual(a2);
     expect(b2).toEqual(b2);

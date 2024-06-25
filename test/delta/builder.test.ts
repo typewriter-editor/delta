@@ -1,7 +1,8 @@
-var Delta = require('../../dist/Delta');
+import Delta from '../../src/Delta';
+import Op from '../../src/Op';
 
 describe('constructor', () => {
-  const ops = [
+  const ops: Op[] = [
     { insert: 'abc' },
     { retain: 1, attributes: { color: 'red' } },
     { delete: 4 },
@@ -55,16 +56,16 @@ describe('insert()', function () {
   });
 
   it('insert(embed)', function () {
-    const delta = new Delta().insert(1);
+    const delta = new Delta().insert('1');
     expect(delta.ops.length).toEqual(1);
-    expect(delta.ops[0]).toEqual({ insert: 1 });
+    expect(delta.ops[0]).toEqual({ insert: '1' });
   });
 
   it('insert(embed, attributes)', function () {
     const obj = { url: 'http://quilljs.com', alt: 'Quill' };
-    const delta = new Delta().insert(1, obj);
+    const delta = new Delta().insert('1', obj);
     expect(delta.ops.length).toEqual(1);
-    expect(delta.ops[0]).toEqual({ insert: 1, attributes: obj });
+    expect(delta.ops[0]).toEqual({ insert: '1', attributes: obj });
   });
 
   it('insert(embed) non-integer', function () {
@@ -97,14 +98,8 @@ describe('insert()', function () {
   });
 
   it('insert(text) after delete no merge', function () {
-    const delta = new Delta().insert(1).delete(1).insert('a');
-    const expected = new Delta().insert(1).insert('a').delete(1);
-    expect(delta).toEqual(expected);
-  });
-
-  it('insert(text) after delete no merge', function () {
-    const delta = new Delta().insert(1).delete(1).insert('a');
-    const expected = new Delta().insert(1).insert('a').delete(1);
+    const delta = new Delta().insert('1').delete(1).insert('a');
+    const expected = new Delta().insert('1').insert('a').delete(1);
     expect(delta).toEqual(expected);
   });
 
@@ -207,7 +202,7 @@ describe('push()', function () {
   });
 
   it('push(op) consecutive embeds with matching attributes', function () {
-    const delta = new Delta().insert(1, { alt: 'Description' });
+    const delta = new Delta().insert('1', { alt: 'Description' });
     delta.push({
       insert: { url: 'http://quilljs.com' },
       attributes: { alt: 'Description' },

@@ -1,4 +1,4 @@
-var AttributeMap = require('../dist/Delta').AttributeMap;
+import AttributeMap from '../src/AttributeMap';
 
 describe('AttributeMap', () => {
   describe('compose()', () => {
@@ -25,9 +25,7 @@ describe('AttributeMap', () => {
     });
 
     it('overwrite', () => {
-      expect(
-        AttributeMap.compose(attributes, { bold: false, color: 'blue' }),
-      ).toEqual({
+      expect(AttributeMap.compose(attributes, { bold: false, color: 'blue' })).toEqual({
         bold: false,
         color: 'blue',
       });
@@ -40,25 +38,16 @@ describe('AttributeMap', () => {
     });
 
     it('remove to none', () => {
-      expect(
-        AttributeMap.compose(attributes, { bold: null, color: null }),
-      ).toEqual(undefined);
+      expect(AttributeMap.compose(attributes, { bold: null, color: null })).toEqual(undefined);
     });
 
     it('remove missing', () => {
-      expect(AttributeMap.compose(attributes, { italic: null })).toEqual(
-        attributes,
-      );
+      expect(AttributeMap.compose(attributes, { italic: null })).toEqual(attributes);
     });
 
     describe('complex attribute', function () {
       it('add a new property', function () {
-        expect(
-          AttributeMap.compose(
-            { complex: { foo: 123 } },
-            { complex: { bar: 456 } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.compose({ complex: { foo: 123 } }, { complex: { bar: 456 } })).toEqual({
           complex: {
             foo: 123,
             bar: 456,
@@ -67,50 +56,32 @@ describe('AttributeMap', () => {
       });
 
       it('overwrite an existing property', function () {
-        expect(
-          AttributeMap.compose(
-            { complex: { foo: 123 } },
-            { complex: { foo: 456 } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.compose({ complex: { foo: 123 } }, { complex: { foo: 456 } })).toEqual({
           complex: { foo: 456 },
         });
       });
 
       it('remove an existing property', function () {
-        expect(
-          AttributeMap.compose(
-            { complex: { foo: 123, bar: 456 } },
-            { complex: { foo: null } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.compose({ complex: { foo: 123, bar: 456 } }, { complex: { foo: null } })).toEqual({
           complex: { bar: 456 },
         });
       });
 
       it('remove the last property', function () {
-        expect(
-          AttributeMap.compose(
-            { complex: { foo: 123 } },
-            { complex: { foo: null } },
-          ),
-        ).toBeUndefined();
+        expect(AttributeMap.compose({ complex: { foo: 123 } }, { complex: { foo: null } })).toBeUndefined();
       });
 
       it('overwrites arrays', function () {
-        expect(
-          AttributeMap.compose(
-            { complex: { foo: [1, 2, 3] } },
-            { complex: { foo: [1, 3] } },
-          ),
-        ).toEqual({ complex: { foo: [1, 3] } });
+        expect(AttributeMap.compose({ complex: { foo: [1, 2, 3] } }, { complex: { foo: [1, 3] } })).toEqual({
+          complex: { foo: [1, 3] },
+        });
       });
 
       it('ignores null leaves on new attributes', function () {
         expect(
           AttributeMap.compose(undefined, {
             complex: { foo: null, bar: null },
-          }),
+          })
         ).toBeUndefined();
       });
 
@@ -132,8 +103,8 @@ describe('AttributeMap', () => {
                 },
                 qux: 'def',
               },
-            },
-          ),
+            }
+          )
         ).toEqual({
           complex: {
             foo: {
@@ -183,65 +154,35 @@ describe('AttributeMap', () => {
 
     describe('complex attribute', function () {
       it('same format', function () {
-        expect(
-          AttributeMap.diff(
-            { complex: { foo: 123 } },
-            { complex: { foo: 123 } },
-          ),
-        ).toBeUndefined();
+        expect(AttributeMap.diff({ complex: { foo: 123 } }, { complex: { foo: 123 } })).toBeUndefined();
       });
 
       it('change the only property', function () {
-        expect(
-          AttributeMap.diff(
-            { complex: { foo: 123 } },
-            { complex: { foo: 456 } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.diff({ complex: { foo: 123 } }, { complex: { foo: 456 } })).toEqual({
           complex: { foo: 456 },
         });
       });
 
       it('change one property but not another', function () {
-        expect(
-          AttributeMap.diff(
-            { complex: { foo: 123, bar: 456 } },
-            { complex: { foo: 789, bar: 456 } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.diff({ complex: { foo: 123, bar: 456 } }, { complex: { foo: 789, bar: 456 } })).toEqual({
           complex: { foo: 789 },
         });
       });
 
       it('add a property', function () {
-        expect(
-          AttributeMap.diff(
-            { complex: { foo: 123 } },
-            { complex: { foo: 123, bar: 456 } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.diff({ complex: { foo: 123 } }, { complex: { foo: 123, bar: 456 } })).toEqual({
           complex: { bar: 456 },
         });
       });
 
       it('remove a property', function () {
-        expect(
-          AttributeMap.diff(
-            { complex: { foo: 123, bar: 456 } },
-            { complex: { foo: 123 } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.diff({ complex: { foo: 123, bar: 456 } }, { complex: { foo: 123 } })).toEqual({
           complex: { bar: null },
         });
       });
 
       it('array', function () {
-        expect(
-          AttributeMap.diff(
-            { complex: { foo: [1, 2, 3] } },
-            { complex: { foo: [1, 3] } },
-          ),
-        ).toEqual({
+        expect(AttributeMap.diff({ complex: { foo: [1, 2, 3] } }, { complex: { foo: [1, 3] } })).toEqual({
           complex: { foo: [1, 3] },
         });
       });
@@ -355,9 +296,7 @@ describe('AttributeMap', () => {
     });
 
     it('both are undefined', () => {
-      expect(AttributeMap.transform(undefined, undefined, false)).toEqual(
-        undefined,
-      );
+      expect(AttributeMap.transform(undefined, undefined, false)).toEqual(undefined);
     });
 
     it('with priority', () => {
@@ -373,31 +312,20 @@ describe('AttributeMap', () => {
     describe('complex attribute', function () {
       it('with priority', function () {
         expect(
-          AttributeMap.transform(
-            { complex: { foo: 123, bar: 456 } },
-            { complex: { foo: 789, baz: 'abc' } },
-            true,
-          ),
+          AttributeMap.transform({ complex: { foo: 123, bar: 456 } }, { complex: { foo: 789, baz: 'abc' } }, true)
         ).toEqual({ complex: { baz: 'abc' } });
       });
 
       it('without priority', function () {
         expect(
-          AttributeMap.transform(
-            { complex: { foo: 123, bar: 456 } },
-            { complex: { foo: 789, baz: 'abc' } },
-            false,
-          ),
+          AttributeMap.transform({ complex: { foo: 123, bar: 456 } }, { complex: { foo: 789, baz: 'abc' } }, false)
         ).toEqual({ complex: { foo: 789, baz: 'abc' } });
       });
 
       it('array', function () {
-        expect(
-          AttributeMap.transform(
-            { complex: { foo: [1, 2, 3] } },
-            { complex: { foo: [4, 5, 6] } },
-          ),
-        ).toEqual({ complex: { foo: [4, 5, 6] } });
+        expect(AttributeMap.transform({ complex: { foo: [1, 2, 3] } }, { complex: { foo: [4, 5, 6] } })).toEqual({
+          complex: { foo: [4, 5, 6] },
+        });
       });
     });
   });

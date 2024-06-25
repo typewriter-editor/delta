@@ -1,5 +1,4 @@
-var Delta = require('../dist/Delta');
-var Op = require('../dist/Delta').Op;
+import Op from '../src/Op';
 
 describe('Op', () => {
   describe('length()', () => {
@@ -16,7 +15,7 @@ describe('Op', () => {
     });
 
     it('insert embed', () => {
-      expect(Op.length({ insert: 2 })).toEqual(1);
+      expect(Op.length({ insert: '2' })).toEqual(1);
     });
   });
 });

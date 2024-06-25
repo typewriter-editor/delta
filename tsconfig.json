@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "outDir": "dist/",
     "sourceMap": true,
-    "strict": true,
-    "target": "ES2015",
-    "module": "commonjs",
     "esModuleInterop": true,
+    "target": "es2021",
+    "lib": ["es2021"],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "outDir": "dist/",
+    "strict": true,
+    "noImplicitAny": true,
     "noErrorTruncation": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true

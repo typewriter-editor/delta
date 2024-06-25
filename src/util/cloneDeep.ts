@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 // Just work with plain objects and arrays
 export default function cloneDeep(value: any): any {
   if (!value) return value;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const EMPTY_OBJ = {};
 
 interface IsEqualOptions {

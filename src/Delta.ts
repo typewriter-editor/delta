@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import diff from 'fast-diff';
-import isEqual from './util/isEqual';
 import AttributeMap from './AttributeMap';
 import Op from './Op';
+import isEqual from './util/isEqual';
 
 const NULL_CHARACTER = String.fromCharCode(0); // Placeholder char for embed in diff()
 
-class Delta {
+export default class Delta {
   static Op = Op;
   static AttributeMap = AttributeMap;
 
@@ -22,17 +21,13 @@ class Delta {
     }
   }
 
-  insert(arg: string | Record<string, any>, attributes?: AttributeMap): this {
+  insert(arg: string | Record<string, any>, attributes?: AttributeMap | null): this {
     const newOp: Op = {};
     if (typeof arg === 'string' && arg.length === 0) {
       return this;
     }
     newOp.insert = arg;
-    if (
-      attributes != null &&
-      typeof attributes === 'object' &&
-      Object.keys(attributes).length > 0
-    ) {
+    if (attributes != null && typeof attributes === 'object' && Object.keys(attributes).length > 0) {
       newOp.attributes = attributes;
     }
     return this.push(newOp);
@@ -45,16 +40,12 @@ class Delta {
     return this.push({ delete: length });
   }
 
-  retain(length: number, attributes?: AttributeMap): this {
+  retain(length: number, attributes?: AttributeMap | null): this {
     if (length <= 0) {
       return this;
     }
     const newOp: Op = { retain: length };
-    if (
-      attributes != null &&
-      typeof attributes === 'object' &&
-      Object.keys(attributes).length > 0
-    ) {
+    if (attributes != null && typeof attributes === 'object' && Object.keys(attributes).length > 0) {
       newOp.attributes = attributes;
     }
     return this.push(newOp);
@@ -64,10 +55,7 @@ class Delta {
     let index = this.ops.length;
     let lastOp = this.ops[index - 1];
     if (typeof lastOp === 'object') {
-      if (
-        typeof newOp.delete === 'number' &&
-        typeof lastOp.delete === 'number'
-      ) {
+      if (typeof newOp.delete === 'number' && typeof lastOp.delete === 'number') {
         this.ops[index - 1] = { delete: lastOp.delete + newOp.delete };
         return this;
       }
@@ -82,19 +70,13 @@ class Delta {
         }
       }
       if (isEqual(newOp.attributes, lastOp.attributes)) {
-        if (
-          typeof newOp.insert === 'string' &&
-          typeof lastOp.insert === 'string'
-        ) {
+        if (typeof newOp.insert === 'string' && typeof lastOp.insert === 'string') {
           this.ops[index - 1] = { insert: lastOp.insert + newOp.insert };
           if (typeof newOp.attributes === 'object') {
             this.ops[index - 1].attributes = newOp.attributes;
           }
           return this;
-        } else if (
-          typeof newOp.retain === 'number' &&
-          typeof lastOp.retain === 'number'
-        ) {
+        } else if (typeof newOp.retain === 'number' && typeof lastOp.retain === 'number') {
           this.ops[index - 1] = { retain: lastOp.retain + newOp.retain };
           if (typeof newOp.attributes === 'object') {
             this.ops[index - 1].attributes = newOp.attributes;
@@ -134,17 +116,14 @@ class Delta {
   partition(predicate: (op: Op) => boolean): [Op[], Op[]] {
     const passed: Op[] = [];
     const failed: Op[] = [];
-    this.forEach((op) => {
+    this.forEach(op => {
       const target = predicate(op) ? passed : failed;
       target.push(op);
     });
     return [passed, failed];
   }
 
-  reduce<T>(
-    predicate: (accum: T, curr: Op, index: number) => T,
-    initialValue: T,
-  ): T {
+  reduce<T>(predicate: (accum: T, curr: Op, index: number) => T, initialValue: T): T {
     return this.ops.reduce(predicate, initialValue);
   }
 
@@ -187,16 +166,9 @@ class Delta {
     const otherIter = Op.iterator(other.ops);
     const ops: Op[] = [];
     const firstOther = otherIter.peek();
-    if (
-      firstOther != null &&
-      typeof firstOther.retain === 'number' &&
-      firstOther.attributes == null
-    ) {
+    if (firstOther != null && typeof firstOther.retain === 'number' && firstOther.attributes == null) {
       let firstLeft = firstOther.retain;
-      while (
-        thisIter.peekType() === 'insert' &&
-        thisIter.peekLength() <= firstLeft
-      ) {
+      while (thisIter.peekType() === 'insert' && thisIter.peekLength() <= firstLeft) {
         firstLeft -= thisIter.peekLength();
         ops.push(thisIter.next());
       }
@@ -222,7 +194,7 @@ class Delta {
             AttributeMap.compose(
               thisOp.attributes,
               otherOp.attributes,
-              !discardNull && typeof thisOp.retain === 'number',
+              !discardNull && typeof thisOp.retain === 'number'
             );
           if (otherOp.attributes && !isEqual(attributes, thisOp.attributes)) {
             newOp = {};
@@ -244,8 +216,7 @@ class Delta {
           // Optimization if rest of other is just retain
           if (
             otherOp.retain === Infinity ||
-            (!otherIter.hasNext() &&
-              isEqual(delta.ops[delta.ops.length - 1], newOp))
+            (!otherIter.hasNext() && isEqual(delta.ops[delta.ops.length - 1], newOp))
           ) {
             const rest = new Delta(thisIter.rest());
             return delta.concat(rest).chop();
@@ -253,10 +224,7 @@ class Delta {
 
           // Other op should be delete, we could be an insert or retain
           // Insert + delete cancels out
-        } else if (
-          typeof otherOp.delete === 'number' &&
-          typeof thisOp.retain === 'number'
-        ) {
+        } else if (typeof otherOp.delete === 'number' && typeof thisOp.retain === 'number') {
           delta.push(otherOp);
         }
       }
@@ -277,9 +245,9 @@ class Delta {
     if (this.ops === other.ops) {
       return new Delta();
     }
-    const strings = [this, other].map((delta) => {
+    const strings = [this, other].map(delta => {
       return delta
-        .map((op) => {
+        .map(op => {
           if (op.insert != null) {
             return typeof op.insert === 'string' ? op.insert : NULL_CHARACTER;
           }
@@ -307,18 +275,11 @@ class Delta {
             retDelta.delete(opLength);
             break;
           case diff.EQUAL:
-            opLength = Math.min(
-              thisIter.peekLength(),
-              otherIter.peekLength(),
-              length,
-            );
+            opLength = Math.min(thisIter.peekLength(), otherIter.peekLength(), length);
             const thisOp = thisIter.next(opLength);
             const otherOp = otherIter.next(opLength);
             if (isEqual(thisOp.insert, otherOp.insert)) {
-              retDelta.retain(
-                opLength,
-                AttributeMap.diff(thisOp.attributes, otherOp.attributes),
-              );
+              retDelta.retain(opLength, AttributeMap.diff(thisOp.attributes, otherOp.attributes));
             } else {
               retDelta.push(otherOp).delete(opLength);
             }
@@ -330,14 +291,7 @@ class Delta {
     return retDelta.chop();
   }
 
-  eachLine(
-    predicate: (
-      line: Delta,
-      attributes: AttributeMap,
-      index: number,
-    ) => boolean | void,
-    newline = '\n',
-  ): void {
+  eachLine(predicate: (line: Delta, attributes: AttributeMap, index: number) => boolean | void, newline = '\n'): void {
     const iter = Op.iterator(this.ops);
     let line = new Delta();
     let i = 0;
@@ -347,10 +301,7 @@ class Delta {
       }
       const thisOp = iter.peek();
       const start = Op.length(thisOp) - iter.peekLength();
-      const index =
-        typeof thisOp.insert === 'string'
-          ? thisOp.insert.indexOf(newline, start) - start
-          : -1;
+      const index = typeof thisOp.insert === 'string' ? thisOp.insert.indexOf(newline, start) - start : -1;
       if (index < 0) {
         line.push(iter.next());
       } else if (index > 0) {
@@ -379,14 +330,11 @@ class Delta {
       } else if (op.delete || op.retain) {
         const length = (op.delete || op.retain) as number;
         const slice = base.slice(baseIndex, baseIndex + length);
-        slice.forEach((baseOp) => {
+        slice.forEach(baseOp => {
           if (op.delete) {
             inverted.push(baseOp);
           } else if (op.retain && op.attributes) {
-            inverted.retain(
-              Op.length(baseOp),
-              AttributeMap.invert(op.attributes, baseOp.attributes),
-            );
+            inverted.retain(Op.length(baseOp), AttributeMap.invert(op.attributes, baseOp.attributes));
           }
         });
         return baseIndex + length;
@@ -408,10 +356,7 @@ class Delta {
     const otherIter = Op.iterator(other.ops);
     const delta = new Delta();
     while (thisIter.hasNext() || otherIter.hasNext()) {
-      if (
-        thisIter.peekType() === 'insert' &&
-        (priority || otherIter.peekType() !== 'insert')
-      ) {
+      if (thisIter.peekType() === 'insert' && (priority || otherIter.peekType() !== 'insert')) {
         delta.retain(Op.length(thisIter.next()));
       } else if (otherIter.peekType() === 'insert') {
         delta.push(otherIter.next());
@@ -426,14 +371,7 @@ class Delta {
           delta.push(otherOp);
         } else {
           // We retain either their retain or insert
-          delta.retain(
-            length,
-            AttributeMap.transform(
-              thisOp.attributes,
-              otherOp.attributes,
-              priority,
-            ),
-          );
+          delta.retain(length, AttributeMap.transform(thisOp.attributes, otherOp.attributes, priority));
         }
       }
     }
@@ -459,8 +397,6 @@ class Delta {
     return index;
   }
 }
-
-export default Delta;
 
 if (typeof module === 'object') {
   module.exports = Delta;

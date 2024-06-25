@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import cloneDeep from './util/cloneDeep';
 import isEqual from './util/isEqual';
 
