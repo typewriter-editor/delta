@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import AttributeMap from '../src/AttributeMap';
 
 describe('AttributeMap', () => {

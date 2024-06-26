@@ -1,4 +1,4 @@
-import { expect, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Delta from '../../src/Delta';
 
 describe('helpers', () => {
@@ -53,8 +53,8 @@ describe('helpers', () => {
     const spy = { predicate: () => {} };
 
     beforeEach(() => {
-      jest.resetAllMocks();
-      jest.spyOn(spy, 'predicate');
+      vi.resetAllMocks();
+      vi.spyOn(spy, 'predicate');
     });
 
     it('expected', () => {
@@ -100,7 +100,7 @@ describe('helpers', () => {
           count += 1;
         },
       };
-      jest.spyOn(spy, 'predicate');
+      vi.spyOn(spy, 'predicate');
       delta.eachLine(spy.predicate);
       expect(spy.predicate).toBeCalledTimes(2);
     });
@@ -122,7 +122,7 @@ describe('helpers', () => {
 
     it('forEach()', () => {
       const spy = { predicate: () => {} };
-      jest.spyOn(spy, 'predicate');
+      vi.spyOn(spy, 'predicate');
       delta.forEach(spy.predicate);
       expect(spy.predicate).toBeCalledTimes(3);
     });
