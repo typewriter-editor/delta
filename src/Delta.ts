@@ -1,7 +1,7 @@
 import diff from 'fast-diff';
-import AttributeMap from './AttributeMap';
-import Op from './Op';
-import isEqual from './util/isEqual';
+import AttributeMap from './AttributeMap.js';
+import Op from './Op.js';
+import isEqual from './util/isEqual.js';
 
 const NULL_CHARACTER = String.fromCharCode(0); // Placeholder char for embed in diff()
 

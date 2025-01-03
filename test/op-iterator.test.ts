@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import Delta from '../src/Delta';
-import { OpIterator } from '../src/Op';
+import Delta from '../src/Delta.js';
+import { OpIterator } from '../src/Op.js';
 
 describe('OpIterator', () => {
   let delta: Delta;

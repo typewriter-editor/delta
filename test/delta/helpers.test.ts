@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import Delta from '../../src/Delta';
+import Delta from '../../src/Delta.js';
 
 describe('helpers', () => {
   describe('concat()', () => {

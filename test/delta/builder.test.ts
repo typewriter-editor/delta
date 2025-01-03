@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import Delta from '../../src/Delta';
-import Op from '../../src/Op';
+import Delta from '../../src/Delta.js';
+import Op from '../../src/Op.js';
 
 describe('constructor', () => {
   const ops: Op[] = [

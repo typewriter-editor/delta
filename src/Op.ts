@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import AttributeMap from './AttributeMap';
+import AttributeMap from './AttributeMap.js';
 
 interface Op {
   // only one property out of {insert, delete, retain} will be present

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import AttributeMap from '../src/AttributeMap';
+import AttributeMap from '../src/AttributeMap.js';
 
 describe('AttributeMap', () => {
   describe('compose()', () => {

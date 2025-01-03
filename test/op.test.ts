@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import Op from '../src/Op';
+import Op from '../src/Op.js';
 
 describe('Op', () => {
   describe('length()', () => {

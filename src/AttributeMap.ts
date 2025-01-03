@@ -1,5 +1,5 @@
-import cloneDeep from './util/cloneDeep';
-import isEqual from './util/isEqual';
+import cloneDeep from './util/cloneDeep.js';
+import isEqual from './util/isEqual.js';
 
 interface AttributeMap {
   [key: string]: any;
@@ -19,11 +19,7 @@ function isDeepNull(value: unknown): boolean {
 }
 
 namespace AttributeMap {
-  export function compose(
-    a: AttributeMap = {},
-    b: AttributeMap = {},
-    keepNull?: boolean,
-  ): AttributeMap | undefined {
+  export function compose(a: AttributeMap = {}, b: AttributeMap = {}, keepNull?: boolean): AttributeMap | undefined {
     if (typeof a !== 'object') {
       a = {};
     }
@@ -52,10 +48,7 @@ namespace AttributeMap {
     return Object.keys(attributes).length > 0 ? attributes : undefined;
   }
 
-  export function diff(
-    a: AttributeMap = {},
-    b: AttributeMap = {},
-  ): AttributeMap | undefined {
+  export function diff(a: AttributeMap = {}, b: AttributeMap = {}): AttributeMap | undefined {
     if (typeof a !== 'object') {
       a = {};
     }
@@ -79,10 +72,7 @@ namespace AttributeMap {
     return Object.keys(attributes).length > 0 ? attributes : undefined;
   }
 
-  export function invert(
-    attr: AttributeMap = {},
-    base: AttributeMap = {},
-  ): AttributeMap {
+  export function invert(attr: AttributeMap = {}, base: AttributeMap = {}): AttributeMap {
     attr = attr || {};
     const baseInverted = Object.keys(base).reduce<AttributeMap>((memo, key) => {
       if (!isEqual(base[key], attr[key]) && attr[key] !== undefined) {
@@ -105,7 +95,7 @@ namespace AttributeMap {
   export function transform(
     a: AttributeMap | undefined,
     b: AttributeMap | undefined,
-    priority = false,
+    priority = false
   ): AttributeMap | undefined {
     if (typeof a !== 'object') {
       return b;
